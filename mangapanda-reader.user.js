@@ -10,8 +10,11 @@
 var numberpage = document.getElementById("pageMenu").length;
 var chapter_link = window.location.href;
 var imgholder = document.getElementById("imgholder");
+while (imgholder.firstChild) {
+    imgholder.removeChild(imgholder.firstChild);
+}
 
-for (var i = 2; i <= numberpage; i++) {
+for (var i = 1; i <= numberpage; i++) {
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", chapter_link + "/" + i, false);
 	xmlhttp.send(null);
