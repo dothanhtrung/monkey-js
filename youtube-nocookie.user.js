@@ -2,7 +2,7 @@
 // @name     youtube-nocookie
 // @version  1
 // @grant    none
-// @match    *
+// @match    *://*/*
 // ==/UserScript==
 
 // Copyright 2018 Trung Do
