@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    redmine-enhanced
 // @description Redmine Enhanced
-// @version  1.0
+// @version  1.1
 // @grant    none
 // @match    *://*redmine*/*
 // ==/UserScript==
@@ -41,4 +41,8 @@ function worktimeJumpCorrect() {
     }
 }
 
-worktimeJumpCorrect();
+
+let url = window.location;
+if (url.pathname.includes('/work_time/')) {
+    worktimeJumpCorrect();
+}
