@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    redmine-enhanced
 // @description Redmine Enhanced
-// @version  1.1
+// @version  1.2
 // @grant    none
 // @match    *://*redmine*/*
 // ==/UserScript==
@@ -41,8 +41,23 @@ function worktimeJumpCorrect() {
     }
 }
 
+// Make gantt chart consistent with label
+function fixGanttScroll() {
+    let gantt_draw_area = document.getElementById("gantt_draw_area");
+    let svgs = gantt_draw_area.getElementsByTagName("svg");
+    if (svgs.length > 1) {
+        // Remove the last one
+        gantt_draw_area.removeChild(svgs[svgs.length - 1]);
+    }
+}
 
-let url = window.location;
-if (url.pathname.includes('/work_time/')) {
+
+// ================= main =================
+
+let url = window.location.pathname;
+
+if (url.includes('/work_time/')) {
     worktimeJumpCorrect();
+} else if (url.includes('/issues/gantt')) {
+    fixGanttScroll();
 }
