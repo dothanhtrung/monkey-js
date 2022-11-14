@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    redmine-enhanced
 // @description Redmine Enhanced
-// @version  1.2
+// @version  1.3
 // @grant    none
 // @match    *://*redmine*/*
 // ==/UserScript==
@@ -51,6 +51,11 @@ function fixGanttScroll() {
     }
 }
 
+// Fix sidebar cover the context menu in issue list
+function fixSidebarCoverContextMenu() {
+    let sidebar = document.getElementById("sidebar");
+    sidebar.style.setProperty('z-index', 0);
+}
 
 // ================= main =================
 
@@ -60,4 +65,6 @@ if (url.includes('/work_time/')) {
     worktimeJumpCorrect();
 } else if (url.includes('/issues/gantt')) {
     fixGanttScroll();
+} else if (url.includes('/issues')) {
+    fixSidebarCoverContextMenu();
 }
