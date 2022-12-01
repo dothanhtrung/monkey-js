@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    redmine-enhanced
 // @description Redmine Enhanced
-// @version  1.3
+// @version  1.4
 // @grant    none
 // @match    *://*redmine*/*
 // ==/UserScript==
@@ -9,8 +9,8 @@
 // Copyright 2022 Trung Do
 
 
-// Correct worktime jumping between month
-function worktimeJumpCorrect() {
+// Correct worktime jumping between months
+function worktimeMonthJump() {
     let a_elements = document.getElementById("content").getElementsByTagName("a");
     let lastmonth_updated = false;
     let nextmonth_updated = false;
@@ -41,6 +41,30 @@ function worktimeJumpCorrect() {
     }
 }
 
+// Correct worktime jumping between projects
+function worktimeProjectJump() {
+    let url = window.location.href;
+    let project_jump = document.getElementById("project-jump")
+    let projects = project_jump.getElementsByClassName("projects")[0].getElementsByTagName("a");
+    let all_projects = project_jump.getElementsByClassName("all-projects")[0].getElementsByTagName("a");
+
+    for (const pj of projects) {
+        let href = pj.getAttribute("href");
+        let pj_id = href.replace(/.*projects\/(.*)\?jump=work_time.*/, "$1");
+        if (url.includes('/work_time/show/')) {
+            href = url.replace(/(.*work_time\/show\/).*(\?.*)/, "$1" + pj_id + "$2");
+        } else if (url.includes('/work_time/index')) {
+            href = url.replace(/(.*work_time)\/index(\?.*)/, "$1/show/" + pj_id + "$2");
+        }
+        pj.setAttribute("href", href);
+    }
+
+    for (const item of all_projects) {
+        let href = url.replace(/(.*work_time).*(\?.*)/, "$1/index$2");
+        item.setAttribute("href", href);
+    }
+}
+
 // Make gantt chart consistent with label
 function fixGanttScroll() {
     let gantt_draw_area = document.getElementById("gantt_draw_area");
@@ -62,7 +86,8 @@ function fixSidebarCoverContextMenu() {
 let url = window.location.pathname;
 
 if (url.includes('/work_time/')) {
-    worktimeJumpCorrect();
+    worktimeMonthJump();
+    worktimeProjectJump()
 } else if (url.includes('/issues/gantt')) {
     fixGanttScroll();
 } else if (url.includes('/issues')) {
