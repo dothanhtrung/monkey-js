@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    redmine-enhanced
 // @description Redmine Enhanced
-// @version  1.4
+// @version  1.5
 // @grant    none
 // @match    *://*redmine*/*
 // ==/UserScript==
@@ -81,6 +81,37 @@ function fixSidebarCoverContextMenu() {
     sidebar.style.setProperty('z-index', 0);
 }
 
+// Remove future weeks and weeks in previous terms out of select list
+function cleanWRSelectDate() {
+    let now = new Date();
+    let current_month = now.getMonth();
+    let begin_of_term = new Date();
+    begin_of_term.setDate(1);
+
+    // month start from 0 to 11
+    if (current_month > 8 || current_month < 3) {
+        begin_of_term.setMonth(3);
+    } else {
+        begin_of_term.setMonth(9);
+    }
+
+    let select_date = document.getElementById("select_date");
+    let options = select_date.getElementsByTagName("option");
+
+    for (let i = 0; i < options.length; i++) {
+        let item = options[i];
+        let start_date = item.value;
+        let end_date = item.innerHTML.split("--&gt;")[1];
+        start_date = new Date(start_date);
+        end_date = new Date(end_date);
+
+        if (start_date > now || end_date < begin_of_term) {
+            select_date.removeChild(item);
+            i--;
+        }
+    }
+}
+
 // ================= main =================
 
 let url = window.location.pathname;
@@ -92,4 +123,6 @@ if (url.includes('/work_time/')) {
     fixGanttScroll();
 } else if (url.includes('/issues')) {
     fixSidebarCoverContextMenu();
+} else if (url.includes('/weeklyreport/')) {
+    cleanWRSelectDate();
 }
