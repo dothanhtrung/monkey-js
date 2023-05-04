@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    redmine-enhanced
 // @description Redmine Enhanced
-// @version  1.5
+// @version  1.6
 // @grant    none
 // @match    *://*redmine*/*
 // ==/UserScript==
@@ -16,20 +16,33 @@ function worktimeMonthJump() {
     let nextmonth_updated = false;
 
     for (const aElement of a_elements) {
+        let href = aElement.getAttribute("href");
+        let paramString = href.split('?')[1];
+        let queryString = new URLSearchParams(paramString);
+        let month = queryString.get("month");
+        let year = queryString.get("year");
+
         if (aElement.innerHTML === "&gt;&gt;") {
-            let href = aElement.getAttribute("href");
-            href = href.replace(/day=\d*&/, "day=1&");
+            let first_working_day = 1;
+            let first_day = new Date(year, month - 1, 1).getDay();
+            if (first_day === 0) {
+                first_working_day += 1;
+            } else if (first_day === 6) {
+                first_working_day += 2;
+            }
+            href = href.replace(/day=\d*&/, "day=" + first_working_day + "&");
             aElement.setAttribute("href", href);
 
             nextmonth_updated = true;
         } else if (aElement.innerHTML === "&lt;&lt;") {
-            let href = aElement.getAttribute("href");
-            let paramString = href.split('?')[1];
-            let queryString = new URLSearchParams(paramString);
-            let month = queryString.get("month");
-            let year = queryString.get("year");
-            let last_day = new Date(year, month, 0).getDate();
-            href = href.replace(/day=\d*&/, "day=" + last_day + "&");
+            let last_working_day = new Date(year, month, 0).getDate();
+            let last_day = new Date(year, month, 0).getDay();
+            if (last_day === 0) {
+                last_working_day -= 2;
+            } else if (last_day === 6) {
+                last_working_day -= 1;
+            }
+            href = href.replace(/day=\d*&/, "day=" + last_working_day + "&");
             aElement.setAttribute("href", href);
 
             lastmonth_updated = true;
