@@ -6,7 +6,7 @@
 // @match    *://*redmine*/*
 // ==/UserScript==
 
-// Copyright 2022 Trung Do
+// Copyright 2023 Trung Do
 
 
 // Correct worktime jumping between months
@@ -125,6 +125,17 @@ function cleanWRSelectDate() {
     }
 }
 
+function assignToMe() {
+    let issue_assigned = document.getElementById("issue_assigned_to_id");
+    for (let i = 0; i < issue_assigned.length; i++) {
+        if (issue_assigned[i].text === "<< me >>") {
+            issue_assigned.value = issue_assigned[i].value;
+            console.log(issue_assigned[i].value);
+        }
+    }
+
+}
+
 // ================= main =================
 
 let url = window.location.pathname;
@@ -134,6 +145,8 @@ if (url.includes('/work_time/')) {
     worktimeProjectJump()
 } else if (url.includes('/issues/gantt')) {
     fixGanttScroll();
+} else if (url.includes('/issues/new')) {
+    assignToMe();
 } else if (url.includes('/issues')) {
     fixSidebarCoverContextMenu();
 } else if (url.includes('/weeklyreport/')) {
